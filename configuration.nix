@@ -62,7 +62,7 @@
   # ── Display & Desktop ─────────────────────────────────────
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
+   displayManager.gdm.enable = true;
     xkb = {
       layout  = "us";
       variant = "";
@@ -162,6 +162,8 @@
     qbittorrent
     pkgs.opencode-desktop
     xwayland-satellite
+    macchina
+    hyfetch
   ];
 
   # ── Programs ──────────────────────────────────────────────
@@ -180,12 +182,10 @@
     enable = true;
     libraries = with pkgs; [
       fontconfig libGL
-      xorg.libX11 xorg.libICE xorg.libSM
+      libX11 libICE libSM
       zlib icu openssl
     ];
   };
-
-  services.flatpak.enable = true;
 
   # ── home-manager ──────────────────────────────────────────
   home-manager = {
