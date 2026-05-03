@@ -150,15 +150,16 @@
 
     # Apps
     kitty
-    kdePackages.dolphin
-    kdePackages.ark
-    kdePackages.kate
+    kdePackages.dolphin kdePackages.ark kdePackages.kate
     firefox
     telegram-desktop
     libreoffice
     obs-studio
     prismlauncher jdk25
     steam
+    discord
+    mpv
+    heroic
 
     # Eye candy / misc
     fastfetch feh nwg-look
@@ -173,9 +174,6 @@
     globe-cli
     qbittorrent
     xwayland-satellite
-    discord
-    mpv
-    heroic
   ];
 
   # ── Programs ──────────────────────────────────────────────
