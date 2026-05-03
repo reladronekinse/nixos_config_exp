@@ -32,7 +32,6 @@
 
     networkmanager = {
       enable = true;
-      dns    = "none";
     };
 
     interfaces.enp42s0 = {
@@ -41,6 +40,7 @@
     };
   };
 
+  services.flatpak.enable = true;
   # ── Locale & Time ─────────────────────────────────────────
   time.timeZone = "Asia/Yekaterinburg";
 
@@ -60,9 +60,9 @@
   };
 
   # ── Display & Desktop ─────────────────────────────────────
+  services.displayManager.gdm.enable = true;
   services.xserver = {
     enable = true;
-   displayManager.gdm.enable = true;
     xkb = {
       layout  = "us";
       variant = "";
@@ -70,8 +70,21 @@
   };
 
   programs.niri.enable = true;
-
+  programs.amnezia-vpn.enable = true;
+  services.cloudflare-warp.enable = true;
   programs.xwayland.enable = true;
+  # Включить doas
+  security.doas.enable = true;
+
+  # Настройка правил: сохранять переменные окружения и запоминать пароль
+  security.doas.extraRules = [{
+    groups = [ "wheel" ]; # Пользователи в этой группе получают права
+    persist = true;       # Не запрашивать пароль каждый раз
+    keepEnv = true;       # Сохранять $PATH и другие переменные
+  }];
+
+  # Отключить sudo (опционально, если хотите полностью убрать)
+  security.sudo.enable = false;
 
   xdg.portal = {
     enable       = true;
@@ -146,7 +159,6 @@
     obs-studio
     prismlauncher jdk25
     steam
-    throne
 
     # Eye candy / misc
     fastfetch feh nwg-look
@@ -160,10 +172,10 @@
     s-tui
     globe-cli
     qbittorrent
-    pkgs.opencode-desktop
     xwayland-satellite
-    macchina
-    hyfetch
+    discord
+    mpv
+    heroic
   ];
 
   # ── Programs ──────────────────────────────────────────────
@@ -171,11 +183,6 @@
     enable                    = true;
     remotePlay.openFirewall   = true;
     dedicatedServer.openFirewall = true;
-  };
-
-  programs.throne = {
-    enable          = true;
-    tunMode.enable  = true;
   };
 
   programs.nix-ld = {
@@ -195,5 +202,5 @@
     users.reladronekinse = import ./home-nix/home.nix;
   };
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
