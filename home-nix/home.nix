@@ -7,7 +7,7 @@
   home = {
     username    = "reladronekinse";
     homeDirectory = "/home/reladronekinse";
-    stateVersion = "24.11";
+    stateVersion = "26.05";
 
     packages = with pkgs; [
       networkmanagerapplet
@@ -60,6 +60,7 @@
     spawn-at-startup "nm-applet"
     spawn-at-startup "waybar"
     spawn-at-startup "awww-daemon"
+    spawn-sh-at-startup "sleep 1 && awww img /etc/nixos/home-nix/niri/sample.jpg"
     spawn-at-startup "dunst"
     spawn-at-startup "xwayland-satellite"
 
