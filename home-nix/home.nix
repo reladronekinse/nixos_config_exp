@@ -330,6 +330,7 @@
     spawn-at-startup "nm-applet"
     spawn-at-startup "waybar"
     spawn-at-startup "awww-daemon"
+    spawn-sh-at-startup "sleep 1 && awww img /etc/nixos/home-nix/niri/sample.jpg"
     spawn-at-startup "dunst"
     spawn-at-startup "xwayland-satellite"
 
