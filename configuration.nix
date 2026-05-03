@@ -114,6 +114,7 @@
     isNormalUser = true;
     description  = "reladronekinse";
     extraGroups  = [ "networkmanager" "wheel" ];
+    hashedPassword = "$6$lYgyoxJjJ3WRHlP0$T/2/u3eEnBkzgd.Xq7NJQvNWClMdMkEWlNUprQ.bhI58ESVJFVVw.HFvTChW0rsIwu1LA0.Hxs8qXSCI/kF0H.";
   };
 
   # ── Fonts ─────────────────────────────────────────────────
