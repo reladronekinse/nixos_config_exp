@@ -1,199 +1,992 @@
 # ============================================================
-# NixOS System Configuration
+# Home Manager Configuration
 # ============================================================
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-    <home-manager/nixos>
-  ];
+  home = {
+    username    = "reladronekinse";
+    homeDirectory = "/home/reladronekinse";
+    stateVersion = "26.05";
 
-  # ── Boot ──────────────────────────────────────────────────
-  boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
-    extraModulePackages = [ config.boot.kernelPackages.r8168 ];
-    blacklistedKernelModules = [ "r8169" ];
-    kernelParams = [ "net.ifnames=0" ];
+    packages = with pkgs; [
+      networkmanagerapplet
+      bibata-cursors
+    ];
 
-    loader = {
-      efi.canTouchEfiVariables = true;
-      systemd-boot.enable = false;
-      grub.enable         = false;
-      refind.enable       = true;
+    pointerCursor = {
+      name    = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+      size    = 24;
+      gtk.enable = true;
+      x11.enable = true;
     };
   };
 
-  # ── Networking ────────────────────────────────────────────
-  networking = {
-    hostName    = "nixos";
-    enableIPv6  = false;
-    nameservers = [ "1.1.1.1" "8.8.8.8" "9.9.9.9" ];
+  programs.home-manager.enable = true;
 
-    networkmanager = {
-      enable = true;
-    };
-
-    interfaces.eth0 = {
-      mtu = 1500;
-      wakeOnLan.enable = false;
-    };
+  # ── XDG config files ──────────────────────────────────────
+  # ============================================================
+  # Fastfetch
+  # ============================================================
+  xdg.configFile."fastfetch/sample.png" = {
+    source = ./fastfetch/sample.png;
   };
+  xdg.configFile."fastfetch/config.jsonc".text = ''
+    {
+      "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
 
-  services.flatpak.enable = true;
-  # ── Locale & Time ─────────────────────────────────────────
-  time.timeZone = "Asia/Yekaterinburg";
+      "logo": {
+        "type": "kitty",
+        "source": "~/.config/fastfetch/sample.png",
+        "width": 33,
+        "height": 15
+      },
 
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS        = "en_US.UTF-8";
-      LC_IDENTIFICATION = "en_US.UTF-8";
-      LC_MEASUREMENT    = "en_US.UTF-8";
-      LC_MONETARY       = "en_US.UTF-8";
-      LC_NAME           = "en_US.UTF-8";
-      LC_NUMERIC        = "en_US.UTF-8";
-      LC_PAPER          = "en_US.UTF-8";
-      LC_TELEPHONE      = "en_US.UTF-8";
-      LC_TIME           = "en_US.UTF-8";
-    };
-  };
+      "display": {
+        "separator": " ➜ ",
+        "color": {
+          "keys": "31;33;32;34;35",
+          "title": "35",
+          "output": "97",
+          "separator": "90"
+        },
+        "brightColor": true,
+        "duration": {
+          "abbreviation": false,
+          "spaceBeforeUnit": "default"
+        },
+        "size": {
+          "maxPrefix": "YB",
+          "binaryPrefix": "iec",
+          "ndigits": 2,
+          "spaceBeforeUnit": "default"
+        },
+        "temp": {
+          "unit": "D",
+          "ndigits": 1,
+          "color": {
+            "green": "32",
+            "yellow": "93",
+            "red": "91"
+          },
+          "spaceBeforeUnit": "default"
+        },
+        "percent": {
+          "type": ["num", "num-color"],
+          "ndigits": 0,
+          "color": {
+            "green": "32",
+            "yellow": "93",
+            "red": "91"
+          },
+          "spaceBeforeUnit": "default",
+          "width": 0
+        },
+        "bar": {
+          "char": {
+            "elapsed": "■",
+            "total": "-"
+          },
+          "border": {
+            "left": "[ ",
+            "right": " ]",
+            "leftElapsed": "",
+            "rightElapsed": ""
+          },
+          "color": {
+            "elapsed": "auto",
+            "total": "97",
+            "border": "97"
+          },
+          "width": 10
+        },
+        "fraction": {
+          "ndigits": 2
+        },
+        "noBuffer": false,
+        "key": {
+          "width": 0,
+          "type": "string",
+          "paddingLeft": 0
+        },
+        "freq": {
+          "ndigits": 2,
+          "spaceBeforeUnit": "default"
+        },
+        "constants": []
+      },
 
-  # ── Display & Desktop ─────────────────────────────────────
-  services.displayManager.gdm.enable = true;
-  services.xserver = {
+      "general": {
+        "thread": true,
+        "processingTimeout": 5000,
+        "detectVersion": true,
+        "playerName": "",
+        "dsForceDrm": false
+      },
+
+      "modules": [
+        {
+          "type": "title",
+          "key": " ",
+          "keyIcon": "",
+          "fqdn": false,
+          "color": {
+            "user": "",
+            "at": "",
+            "host": ""
+          }
+        },
+        {
+          "type": "separator",
+          "string": "-",
+          "outputColor": "",
+          "times": 0
+        },
+        {
+          "type": "os",
+          "keyIcon": ""
+        },
+        {
+          "type": "host",
+          "keyIcon": "󰌢"
+        },
+        {
+          "type": "kernel",
+          "keyIcon": ""
+        },
+        {
+          "type": "uptime",
+          "keyIcon": ""
+        },
+        {
+          "type": "packages",
+          "keyIcon": "󰏖",
+          "disabled": ["apk"],
+          "combined": false
+        },
+        {
+          "type": "shell",
+          "keyIcon": ""
+        },
+        {
+          "type": "display",
+          "keyIcon": "󰍹",
+          "compactType": "none",
+          "preciseRefreshRate": false
+        },
+        {
+          "type": "de",
+          "keyIcon": ""
+        },
+        {
+          "type": "wm",
+          "keyIcon": "",
+          "detectPlugin": true
+        },
+        {
+          "type": "wmtheme",
+          "keyIcon": "󰓸"
+        },
+        {
+          "type": "theme",
+          "keyIcon": "󰉼"
+        },
+        {
+          "type": "icons",
+          "keyIcon": ""
+        },
+        {
+          "type": "font",
+          "keyIcon": ""
+        },
+        {
+          "type": "cursor",
+          "keyIcon": "󰆿"
+        },
+        {
+          "type": "terminal",
+          "keyIcon": ""
+        },
+        {
+          "type": "terminalfont",
+          "keyIcon": ""
+        },
+        {
+          "type": "cpu",
+          "keyIcon": "",
+          "temp": false,
+          "showPeCoreCount": false
+        },
+        {
+          "type": "gpu",
+          "keyIcon": "󰾲",
+          "driverSpecific": false,
+          "detectionMethod": "pci",
+          "temp": false,
+          "hideType": "none",
+          "percent": {
+            "green": 50,
+            "yellow": 80,
+            "type": 0
+          }
+        },
+        {
+          "type": "memory",
+          "keyIcon": "",
+          "percent": {
+            "green": 50,
+            "yellow": 80,
+            "type": 0
+          }
+        },
+        {
+          "type": "swap",
+          "percent": {
+            "green": 50,
+            "yellow": 80,
+            "type": 0
+          },
+          "keyIcon": "󰓡",
+          "separate": false
+        },
+        {
+          "type": "disk",
+          "keyIcon": "",
+          "showRegular": true,
+          "showExternal": true,
+          "showHidden": false,
+          "showSubvolumes": false,
+          "showReadOnly": true,
+          "showUnknown": false,
+          "folders": "",
+          "hideFolders": "/efi:/boot:/boot/*",
+          "hideFS": "",
+          "useAvailable": false,
+          "percent": {
+            "green": 50,
+            "yellow": 80,
+            "type": 0
+          }
+        },
+        {
+          "type": "battery",
+          "keyIcon": "",
+          "temp": false,
+          "percent": {
+            "green": 50,
+            "yellow": 20,
+            "type": 0
+          }
+        },
+        {
+          "type": "poweradapter",
+          "keyIcon": "󰚥"
+        },
+        {
+          "type": "locale",
+          "keyIcon": ""
+        },
+        "break",
+        {
+          "type": "colors",
+          "key": " ",
+          "keyIcon": "",
+          "symbol": "block",
+          "paddingLeft": 0,
+          "block": {
+            "width": 3,
+            "range": [0, 15]
+          }
+        }
+      ]
+    }
+  '';
+
+  # ============================================================
+  # Niri
+  # ============================================================
+  xdg.configFile."niri/config.kdl".text = ''
+    // Input device configuration.
+    input {
+        keyboard {
+            xkb {
+                layout "us,ru"
+                options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+            }
+            numlock
+        }
+
+        touchpad {
+            tap
+            natural-scroll
+        }
+
+        warp-mouse-to-focus
+        focus-follows-mouse max-scroll-amount="0%"
+    }
+
+    // Spawn at startup
+    spawn-at-startup "nm-applet"
+    spawn-at-startup "waybar"
+    spawn-at-startup "awww-daemon"
+    spawn-sh-at-startup "sleep 1 && awww img /etc/nixos/home-nix/niri/sample.jpg"
+    spawn-at-startup "dunst"
+    spawn-at-startup "xwayland-satellite"
+
+    // Environment variables
+    environment {
+        XCURSOR_THEME "Bibata-Modern-Classic"
+        XCURSOR_SIZE "24"
+        DISPLAY ":0"
+        // Для Qt-приложений (например, Telegram, VLC)
+        QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
+        // Для GTK-приложений (иногда помогает)
+        GTK_CSD "0"
+    }
+    prefer-no-csd
+    // Outputs
+    output "DP-1" {
+        mode "2560x1440@164.998"
+        position x=0 y=0
+        variable-refresh-rate
+    }
+
+    output "HDMI-A-1" {
+        mode "1280x1024@75.025"
+        position x=2560 y=0
+    }
+
+    // Layout
+    layout {
+        gaps 16
+        center-focused-column "never"
+
+        preset-column-widths {
+            proportion 0.33333
+            proportion 0.5
+            proportion 0.66667
+        }
+
+        default-column-width { proportion 0.5; }
+
+        focus-ring {
+            width 4
+            active-color "#7fc8ff"
+            inactive-color "#505050"
+        }
+
+        border {
+            off
+            width 4
+            active-color "#cba6f7"
+            inactive-color "#45475a"
+            urgent-color "#9b0000"
+        }
+
+    }
+
+    // Screenshot path
+    screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+    // Gestures
+    gestures {
+        hot-corners {
+            off
+        }
+    }
+
+    // Animations
+    animations { }
+
+    // Window rules
+    window-rule {
+        geometry-corner-radius 12
+        clip-to-geometry true
+    }
+    window-rule {
+        match app-id=r#"^org\.wezfurlong\.wezterm$"#
+        default-column-width {}
+    }
+
+    window-rule {
+        match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+        open-floating true
+    }
+
+    // Keybindings
+    binds {
+        Mod+Shift+Slash { show-hotkey-overlay; }
+        Mod+Q { spawn "kitty"; }
+        Mod+R { spawn "wofi" "--show" "drun"; }
+        Super+Alt+L { spawn "swaylock"; }
+
+        Mod+C repeat=false { close-window; }
+        Mod+O repeat=false { toggle-overview; }
+        Mod+V { toggle-window-floating; }
+        Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+        Mod+W { toggle-column-tabbed-display; }
+        Mod+F { maximize-column; }
+        Mod+Shift+F { fullscreen-window; }
+        Mod+Ctrl+F { expand-column-to-available-width; }
+        Mod+Ctrl+C { center-visible-columns; }
+
+        Mod+Minus { set-column-width "-10%"; }
+        Mod+Equal { set-column-width "+10%"; }
+        Mod+Shift+Minus { set-window-height "-10%"; }
+        Mod+Shift+Equal { set-window-height "+10%"; }
+        Mod+Shift+R { switch-preset-window-height; }
+        Mod+Ctrl+R { reset-window-height; }
+
+        Mod+BracketLeft  { consume-or-expel-window-left; }
+        Mod+BracketRight { consume-or-expel-window-right; }
+        Mod+Comma  { consume-window-into-column; }
+        Mod+Period { expel-window-from-column; }
+
+        Mod+WheelScrollDown      { focus-column-right; }
+        Mod+WheelScrollUp        { focus-column-left; }
+        Mod+Ctrl+WheelScrollDown { move-column-right; }
+        Mod+Ctrl+WheelScrollUp   { move-column-left; }
+        Mod+Shift+WheelScrollDown { focus-workspace-down; }
+        Mod+Shift+WheelScrollUp   { focus-workspace-up; }
+
+        Mod+1 { focus-workspace 1; }
+        Mod+2 { focus-workspace 2; }
+        Mod+3 { focus-workspace 3; }
+        Mod+4 { focus-workspace 4; }
+        Mod+5 { focus-workspace 5; }
+        Mod+6 { focus-workspace 6; }
+        Mod+7 { focus-workspace 7; }
+        Mod+8 { focus-workspace 8; }
+        Mod+9 { focus-workspace 9; }
+        Mod+Ctrl+1 { move-column-to-workspace 1; }
+        Mod+Ctrl+2 { move-column-to-workspace 2; }
+        Mod+Ctrl+3 { move-column-to-workspace 3; }
+        Mod+Ctrl+4 { move-column-to-workspace 4; }
+        Mod+Ctrl+5 { move-column-to-workspace 5; }
+        Mod+Ctrl+6 { move-column-to-workspace 6; }
+        Mod+Ctrl+7 { move-column-to-workspace 7; }
+        Mod+Ctrl+8 { move-column-to-workspace 8; }
+        Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+        Mod+Tab { screenshot; }
+        Ctrl+Print { screenshot-screen; }
+        Alt+Print { screenshot-window; }
+
+        Mod+Shift+E { quit; }
+        Ctrl+Alt+Delete { quit; }
+        Mod+Shift+P { power-off-monitors; }
+        Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+        XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+        XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+        XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+        XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+        XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+        XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+        XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+        XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+        XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+        XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    }
+  '';
+
+  # ============================================================
+  # Kitty
+  # ============================================================
+  programs.kitty = {
     enable = true;
-    xkb = {
-      layout  = "us";
-      variant = "";
+
+    font = {
+      name = "JetBrainsMono Nerd Font";
+      size = 13;
+    };
+
+    settings = {
+      linux_display_server   = "wayland";
+      wayland_titlebar_color = "background";
+      bold_font              = "auto";
+      italic_font            = "auto";
+      bold_italic_font       = "auto";
+      background_opacity     = "0.5";
+      shell                  = "fish";
+
+      # Window
+      initial_window_width    = "95c";
+      initial_window_height   = "35c";
+      window_padding_width    = 20;
+      confirm_os_window_close = 0;
+
+      # Colors — Neovim Tokyo Night
+      background = "#14151e";
+      foreground = "#98b0d3";
+
+      color0  = "#151720"; color8  = "#4f5572";
+      color1  = "#dd6777"; color9  = "#e26c7c";
+      color2  = "#90ceaa"; color10 = "#95d3af";
+      color3  = "#ecd3a0"; color11 = "#f1d8a5";
+      color4  = "#86aaec"; color12 = "#8baff1";
+      color5  = "#c296eb"; color13 = "#c79bf0";
+      color6  = "#93cee9"; color14 = "#98d3ee";
+      color7  = "#cbced3"; color15 = "#d0d3d8";
+
+      cursor            = "#cbced3";
+      cursor_text_color = "#a5b6cf";
+
+      selection_foreground = "#a5b6cf";
+      selection_background = "#1c1e27";
+
+      url_color = "#5de4c7";
+
+      active_border_color   = "#3d59a1";
+      inactive_border_color = "#101014";
+      bell_border_color     = "#fffac2";
+
+      # Tab bar
+      tab_bar_style           = "fade";
+      tab_fade                = 1;
+      active_tab_foreground   = "#3d59a1";
+      active_tab_background   = "#16161e";
+      active_tab_font_style   = "bold";
+      inactive_tab_foreground = "#787c99";
+      inactive_tab_background = "#16161e";
+      inactive_tab_font_style = "bold";
+      tab_bar_background      = "#101014";
+
+      macos_titlebar_color = "#16161e";
+    };
+
+    keybindings = {
+      "kitty_mod+t" = "new_tab_with_cwd";
     };
   };
 
-  programs.niri.enable = true;
-  programs.amnezia-vpn.enable = true;
-  services.cloudflare-warp.enable = true;
-  programs.xwayland.enable = true;
-
-  # ── Doas ──────────────────────────────────────────────────
-  security.doas.enable = true;
-  security.doas.extraRules = [{
-    groups   = [ "wheel" ];
-    persist  = true;
-    keepEnv  = true;
-  }];
-  security.sudo.enable = false;
-
-  xdg.portal = {
-    enable       = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-    config.niri.default = [ "gnome" "gtk" ];
-  };
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  # ── Audio ─────────────────────────────────────────────────
-  services.pipewire = {
-    enable             = true;
-    wireplumber.enable = true;
-    alsa = {
-      enable       = true;
-      support32Bit = true;
-    };
-    pulse.enable = true;
-    jack.enable  = true;
-  };
-
-  # ── Security ──────────────────────────────────────────────
-  security.polkit.enable = true;
-
-  # ── Users ─────────────────────────────────────────────────
-  users.mutableUsers = false;
-  users.users.reladronekinse = {
-    isNormalUser   = true;
-    description    = "reladronekinse";
-    extraGroups    = [ "networkmanager" "wheel" ];
-    hashedPassword = "$6$1QE8PYMhyw4Z3T.F$ZlcO/m67WWgOQy0Rgmi6HKsf4QobXuVGfEzzdreO6hbKP3w6rExoB2u3xuUt/h2ZaOfGj/vKyQlu7wQ3XdY09.";
-  };
-
-  # ── Fonts ─────────────────────────────────────────────────
-  fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
-    nerd-fonts.jetbrains-mono
-    font-awesome
-  ];
-
-  # ── System Packages ───────────────────────────────────────
-  nixpkgs.config.allowUnfree = true;
-
-  environment.systemPackages = with pkgs; [
-    # Core utils
-    vim wget git
-
-    # Wayland / display
-    wayland mesa libinput
-    xdg-desktop-portal
-    qt5.qtwayland
-    qt6.qtwayland
-    qt6.qtsvg
-    qt6.qtmultimedia
-
-    # Niri / Wayland
-    awww dunst
-
-    # Audio / brightness / clipboard
-    alsa-utils pavucontrol playerctl
-    brightnessctl wl-clipboard
-
-    # Apps
-    kitty
-    kdePackages.dolphin kdePackages.ark kdePackages.kate
-    firefox
-    telegram-desktop
-    libreoffice
-    obs-studio
-    prismlauncher jdk25
-    discord
-    mpv
-    heroic
-
-    # Eye candy / misc
-    fastfetch feh nwg-look
-    cava cmatrix
-
-    # Tools
-    ethtool
-    btop
-    cool-retro-term
-    lavat
-    s-tui
-    globe-cli
-    qbittorrent
-    xwayland-satellite
-  ];
-
-  # ── Programs ──────────────────────────────────────────────
-  programs.steam = {
-    enable                       = true;
-    remotePlay.openFirewall      = true;
-    dedicatedServer.openFirewall = true;
-  };
-
-  programs.nix-ld = {
+  # ============================================================
+  # Fish
+  # ============================================================
+  programs.fish = {
     enable = true;
-    libraries = with pkgs; [
-      fontconfig libGL
-      libX11 libICE libSM
-      zlib icu openssl
+
+    interactiveShellInit = ''
+      set -g fish_greeting
+      fastfetch
+    '';
+
+    plugins = [
+      { name = "tide"; src = pkgs.fishPlugins.tide.src; }
     ];
   };
 
-  # ── home-manager ──────────────────────────────────────────
-  home-manager = {
-    useGlobalPkgs        = true;
-    useUserPackages      = true;
-    backupFileExtension  = "backup";
-    users.reladronekinse = import ./home-nix/home.nix;
+  # ============================================================
+  # Waybar
+  # ============================================================
+  programs.waybar = {
+    enable  = true;
+    # Собираем waybar с поддержкой модуля niri/workspaces
+    package = pkgs.waybar.override { niriSupport = true; };
+
+    settings = [{
+      layer        = "top";
+      position     = "top";
+      height       = 39;
+      margin-top   = 3;
+      margin-left  = 10;  # Убрали жесткие отступы
+      margin-right = 10;  # Убрали жесткие отступы
+      modules-left   = [ "custom/launcher" "clock"];
+      modules-right  = [
+        "pulseaudio" "network" "cpu" "memory"
+        "backlight" "battery" "tray" "custom/power"
+      ];
+
+      "niri/workspaces" = {
+        disable-scroll = true;
+        all-outputs    = true;
+        format         = "{name}";
+        on-click       = "activate";
+      };
+
+      "custom/launcher" = {
+        format   = " ";
+        tooltip  = false;
+        on-click = "wofi --drun";
+      };
+
+      "custom/power" = {
+        format          = "⏻ ";
+        tooltip         = false;
+        on-click        = "shutdown now";
+        on-click-right  = "reboot";
+      };
+
+      "tray" = {
+        spacing   = 10;
+        icon-size = 18;
+      };
+
+      "clock" = {
+        tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+        format         = " {:%H:%M}";
+        format-alt     = " {:%Y-%m-%d}";
+      };
+
+      "cpu" = {
+        format  = " {usage}% ";
+        tooltip = false;
+      };
+
+      "memory" = {
+        format = " {}% ";
+      };
+
+      "backlight" = {
+        format       = "{percent}% {icon}";
+        format-icons = [ "󰃞" "󰃟" "󰃠" ];
+      };
+
+      "battery" = {
+        states = {
+          warning  = 30;
+          critical = 15;
+        };
+        format          = "{capacity}% {icon}";
+        format-full     = "{capacity}% {icon}";
+        format-charging = "{capacity}% ";
+        format-plugged  = "{capacity}% ";
+        format-alt      = "{time} {icon}";
+        format-icons    = [ "" "" "" "" "" ];
+      };
+
+      "network" = {
+        format-wifi       = " {essid} ({signalStrength}%) ";
+        format-ethernet   = "󰈀 {ifname} ";
+        tooltip-format    = "{ifname} via {gwaddr} ";
+        format-linked     = "󰈀 {ifname} (No IP) ";
+        format-disconnected = "󰤮 Disconnected ";
+        format-alt        = "{ifname}: {ipaddr}/{cidr}";
+      };
+
+      "pulseaudio" = {
+        format                 = "{volume}% {icon} {format_source} ";
+        format-bluetooth       = "{volume}% {icon}  {format_source}";
+        format-bluetooth-muted = "󰂲 {format_source}";
+        format-muted           = "󰝟 {format_source}";
+        format-source          = " {volume}% ";
+        format-source-muted    = " ";
+        format-icons = {
+          headphone  = "";
+          hands-free = "";
+          headset    = "";
+          phone      = "";
+          portable   = "";
+          car        = "";
+          default    = [ "" "" "" ];
+        };
+        on-click = "pavucontrol";
+      };
+    }];
+
+    style = ''
+      * {
+          border: none;
+          border-radius: 10px;
+          font-family: "JetbrainsMono Nerd Font";
+          font-size: 17px;
+          min-height: 10px;
+      }
+
+      window#waybar {
+          background: transparent;
+      }
+
+      window#waybar.hidden {
+          opacity: 0.2;
+      }
+
+      #window {
+          margin-top: 6px;
+          padding-left: 10px;
+          padding-right: 10px;
+          border-radius: 10px;
+          transition: none;
+          color: transparent;
+          background: transparent;
+      }
+
+      #workspaces {
+          margin-top: 6px;
+          margin-left: 12px;
+          font-size: 4px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          background: #161320;
+          transition: none;
+      }
+
+      #workspaces button {
+          transition: none;
+          color: #B5E8E0;
+          background: transparent;
+          font-size: 16px;
+          border-radius: 2px;
+      }
+
+      #workspaces button.occupied {
+          transition: none;
+          color: #F28FAD;
+          background: transparent;
+          font-size: 4px;
+      }
+
+      #workspaces button.active {
+          color: #ABE9B3;
+          border-top: 2px solid #ABE9B3;
+          border-bottom: 2px solid #ABE9B3;
+      }
+
+      #workspaces button:hover {
+          transition: none;
+          box-shadow: inherit;
+          text-shadow: inherit;
+          color: #E8A2AF;
+          border-color: #E8A2AF;
+      }
+
+      #workspaces button.active:hover {
+          color: #E8A2AF;
+      }
+
+      #network {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 18px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #bd93f9;
+      }
+
+      #pulseaudio {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #1A1826;
+          background: #FAE3B0;
+      }
+
+      #battery {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #B5E8E0;
+      }
+
+      #battery.charging, #battery.plugged {
+          color: #161320;
+          background-color: #B5E8E0;
+      }
+
+      #battery.critical:not(.charging) {
+          background-color: #B5E8E0;
+          color: #161320;
+          animation-name: blink;
+          animation-duration: 0.5s;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+      }
+
+      @keyframes blink {
+          to {
+              background-color: #BF616A;
+              color: #B5E8E0;
+          }
+      }
+
+      #backlight {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #F8BD96;
+      }
+
+      #clock {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #ABE9B3;
+      }
+
+      #memory {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          margin-bottom: 0px;
+          padding-right: 10px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #DDB6F2;
+      }
+
+      #cpu {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          margin-bottom: 0px;
+          padding-right: 10px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #96CDFB;
+      }
+
+      #tray {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          margin-bottom: 0px;
+          padding-right: 10px;
+          border-radius: 10px;
+          transition: none;
+          color: #B5E8E0;
+          background: #161320;
+      }
+
+      #custom-launcher {
+          font-size: 24px;
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 5px;
+          border-radius: 10px;
+          transition: none;
+          color: #89DCEB;
+          background: #161320;
+      }
+
+      #custom-power {
+          font-size: 20px;
+          margin-top: 6px;
+          margin-left: 8px;
+          margin-right: 8px;
+          padding-left: 10px;
+          padding-right: 5px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #F28FAD;
+      }
+
+      #custom-wallpaper {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #C9CBFF;
+      }
+
+      #custom-spotify {
+          margin-top: 6px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 10px;
+          margin-bottom: 0px;
+          border-radius: 10px;
+          transition: none;
+          color: #161320;
+          background: #F2CDCD;
+      }
+    '';
   };
 
-  system.stateVersion = "26.05";
+  # ============================================================
+  # Wofi
+  # ============================================================
+  programs.wofi = {
+    enable = true;
+
+    settings = {
+      width          = 400;
+      height         = 500;
+      location       = "center";
+      show           = "drun";
+      prompt         = "Search...";
+      filter_rate    = 100;
+      allow_markup   = true;
+      no_actions     = true;
+      halign         = "fill";
+      orientation    = "vertical";
+      content_halign = "fill";
+      insensitive    = true;
+      allow_images   = true;
+      image_size     = 16;
+      gtk_dark       = true;
+    };
+
+    style = ''
+      window {
+          background-color: #1a1525;
+          border: 1px solid #6c4fa3;
+          font-family: sans-serif;
+          font-size: 14px;
+      }
+
+      #input {
+          background-color: #241b35;
+          color: #d4b8f0;
+          border: 1px solid #6c4fa3;
+          border-radius: 8px;
+          padding: 8px 12px;
+          margin: 8px;
+          outline: none;
+          caret-color: #a07ad4;
+      }
+
+      #input::placeholder { color: #6b5490; }
+
+      #outer-box { padding: 4px; }
+      #scroll    { margin: 0 4px 4px 4px; }
+      #inner-box { background: transparent; }
+
+      #entry {
+          padding: 6px 10px;
+          border-radius: 8px;
+          color: #c9a8f0;
+      }
+
+      #entry:selected {
+          background-color: #3d2460;
+          color: #e8d4ff;
+      }
+
+      #entry image { margin-right: 8px; }
+      #text { color: inherit; }
+    '';
+  };
 }
