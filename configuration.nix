@@ -34,7 +34,7 @@
       enable = true;
     };
 
-    interfaces.enp42s0 = {
+    interfaces.eth0 = {
       mtu = 1500;
       wakeOnLan.enable = false;
     };
