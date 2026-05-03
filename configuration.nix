@@ -156,7 +156,6 @@
     libreoffice
     obs-studio
     prismlauncher jdk25
-    steam
     discord
     mpv
     heroic
