@@ -1,1 +1,1 @@
-# nixos_config_exp
+# NixOS reladronekinse's experimental config.
